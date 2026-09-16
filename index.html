@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Orden Del Descorke</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6ece1;
+    --bg-raised:#fffbf5;
+    --card-bg:#fffdf9;
+    --ink:#241b16;
+    --ink-soft:#6e5b4e;
+    --wine:#7c1f35;
+    --wine-deep:#5c1527;
+    --gold:#b9832a;
+    --line:#d8c4ac;
+    --line-strong:#c3a880;
+    --focus:#b9832a;
+    --shadow: 0 1px 0 rgba(36,27,22,.05);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Jost", "Trebuchet MS", sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brand-word,.plan-name,.step-num{
+    font-family:"Baloo 2","Segoe UI Rounded", sans-serif;
+    text-wrap:balance;
+  }
+  a{color:inherit;}
+  img,svg{max-width:100%;}
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;}
+  section{padding-block:64px;}
+  .eyebrow{
+    font-size:.78rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--wine);
+    font-weight:600;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:"Jost",sans-serif;
+    font-weight:600;
+    font-size:.95rem;
+    letter-spacing:.02em;
+    padding:13px 26px;
+    border-radius:999px;
+    border:2px solid transparent;
+    cursor:pointer;
+    text-decoration:none;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px;}
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--wine);color:#fff8f2;}
+  .btn-primary:hover{background:var(--wine-deep);}
+  .btn-ghost{background:transparent;border-color:var(--line-strong);color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--wine);color:var(--wine);}
+  .btn-small{padding:9px 18px;font-size:.85rem;}
+  .btn-block{width:100%;justify-content:center;}
+
+  /* header */
+  header{
+    position:sticky;top:0;z-index:40;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-block:14px;gap:16px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);}
+  .brand-mark{width:34px;height:34px;flex:none;}
+  .brand-word{font-size:1.05rem;font-weight:700;letter-spacing:.01em;line-height:1.05;}
+  .brand-word span{display:block;font-family:"Jost",sans-serif;font-weight:400;font-size:.62rem;letter-spacing:.18em;color:var(--ink-soft);text-transform:uppercase;}
+  nav{display:flex;align-items:center;gap:22px;}
+  nav a{font-size:.9rem;color:var(--ink-soft);text-decoration:none;}
+  nav a:hover{color:var(--wine);}
+  .nav-links{display:flex;gap:22px;}
+  @media (max-width:720px){
+    .nav-links{display:none;}
+  }
+
+  /* hero */
+  .hero{padding-top:56px;}
+  .hero-grid{
+    display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;
+  }
+  @media (max-width:820px){ .hero-grid{grid-template-columns:1fr;gap:32px;} }
+  .hero h1{
+    font-size:clamp(2.1rem,4.6vw,3.4rem);
+    line-height:1.06;
+    margin:.5em 0 .38em;
+    font-weight:800;
+  }
+  .hero h1 em{font-style:normal;color:var(--wine);}
+  .hero p.lede{
+    font-size:1.08rem;color:var(--ink-soft);max-width:46ch;margin:0 0 28px;
+  }
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:14px;align-items:center;}
+  .hero-note{margin-top:18px;font-size:.82rem;color:var(--ink-soft);}
+  .hero-art{display:flex;justify-content:center;}
+  .brand-mark{object-fit:contain;border-radius:9px;background:#f6ece1;padding:3px;}
+  .hero-logo-badge{
+    width:264px;height:264px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--bg-raised);border:2px dashed var(--line-strong);
+    padding:18px;
+  }
+  .hero-logo-badge img{width:160px;height:auto;}
+  @media (max-width:420px){ .hero-logo-badge{width:210px;height:210px;} .hero-logo-badge img{width:128px;} }
+
+  /* dashed frame motif */
+  .frame{
+    border:2px dashed var(--line-strong);
+    border-radius:28px;
+    padding:36px;
+    background:var(--bg-raised);
+  }
+  @media (max-width:600px){ .frame{padding:22px;border-radius:20px;} }
+
+  .section-head{max-width:60ch;margin-bottom:40px;}
+  .section-head h2{font-size:clamp(1.6rem,3vw,2.1rem);margin:.3em 0 .3em;font-weight:700;}
+  .section-head p{color:var(--ink-soft);font-size:1rem;margin:0;}
+
+  /* steps */
+  .steps{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:0;counter-reset:step;
+    position:relative;
+  }
+  @media (max-width:880px){ .steps{grid-template-columns:1fr;gap:28px;} }
+  .step{position:relative;padding:0 18px;text-align:left;}
+  .step:not(:last-child)::after{
+    content:"";position:absolute;top:24px;left:66px;right:-18px;
+    height:2px;background:repeating-linear-gradient(90deg,var(--line-strong) 0 8px, transparent 8px 14px);
+  }
+  @media (max-width:880px){ .step:not(:last-child)::after{display:none;} }
+  .step-num{
+    width:48px;height:48px;border-radius:50%;
+    border:2px solid var(--wine);color:var(--wine);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:1.15rem;margin-bottom:16px;background:var(--bg-raised);
+  }
+  .step h3{font-size:1.05rem;margin:0 0 8px;font-weight:700;}
+  .step p{margin:0;color:var(--ink-soft);font-size:.92rem;}
+
+  .disfrute{
+    margin-top:44px;display:flex;gap:18px;align-items:flex-start;
+    padding:22px 24px;border-radius:18px;background:var(--bg-raised);border:1px solid var(--line);
+  }
+  .disfrute svg{flex:none;width:30px;height:30px;color:var(--gold);}
+  .disfrute p{margin:0;color:var(--ink-soft);font-size:.92rem;}
+  .disfrute strong{color:var(--ink);}
+
+  /* plans */
+  .toggle{
+    display:inline-flex;border:2px solid var(--line-strong);border-radius:999px;padding:4px;gap:4px;
+    background:var(--bg-raised);
+  }
+  .toggle button{
+    border:none;background:transparent;padding:9px 20px;border-radius:999px;
+    font-family:"Jost",sans-serif;font-weight:600;font-size:.86rem;color:var(--ink-soft);cursor:pointer;
+  }
+  .toggle button[aria-pressed="true"]{background:var(--wine);color:#fff8f2;}
+  .plans-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:18px;margin-bottom:32px;}
+
+  .plans-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+  @media (max-width:980px){ .plans-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .plans-grid{grid-template-columns:1fr;} }
+
+  .plan-card{
+    background:var(--card-bg);border:1px solid var(--line);border-radius:20px;
+    padding:24px 20px;display:flex;flex-direction:column;gap:14px;position:relative;
+  }
+  .plan-card.featured{border-color:var(--wine);box-shadow:0 0 0 1px var(--wine);}
+  .plan-badge{
+    position:absolute;top:-12px;left:20px;background:var(--gold);color:#2b1c07;
+    font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:4px 10px;border-radius:999px;
+  }
+  .plan-icon{width:38px;height:38px;color:var(--wine);}
+  .plan-name{font-size:1.15rem;font-weight:700;margin:0;}
+  .plan-desc{font-size:.85rem;color:var(--ink-soft);margin:0;min-height:2.6em;}
+  .plan-price{font-size:1.7rem;font-weight:700;font-variant-numeric:tabular-nums;margin:2px 0 0;}
+  .plan-price span{font-size:.75rem;font-weight:400;color:var(--ink-soft);}
+  .plan-unavailable{
+    font-size:.85rem;color:var(--ink-soft);padding:18px 0;border-top:1px dashed var(--line);margin-top:auto;
+  }
+
+  /* gustos form */
+  .gustos-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:start;}
+  @media (max-width:880px){ .gustos-wrap{grid-template-columns:1fr;} }
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+  .field label{font-size:.82rem;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;}
+  .field input[type="text"],.field input[type="tel"],.field input[type="email"],.field select,.field textarea{
+    font-family:"Jost",sans-serif;font-size:.95rem;color:var(--ink);
+    background:var(--bg-raised);border:1.5px solid var(--line-strong);border-radius:10px;
+    padding:11px 13px;
+  }
+  .field textarea{resize:vertical;min-height:80px;}
+  .field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{
+    outline:3px solid var(--focus);outline-offset:1px;
+  }
+  .chip-group{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    border:1.5px solid var(--line-strong);border-radius:999px;padding:8px 15px;font-size:.85rem;
+    cursor:pointer;user-select:none;background:var(--bg-raised);color:var(--ink-soft);
+  }
+  .chip input{position:absolute;opacity:0;pointer-events:none;}
+  .chip:has(input:checked){background:var(--wine);border-color:var(--wine);color:#fff8f2;}
+  .chip:has(input:focus-visible){outline:3px solid var(--focus);outline-offset:2px;}
+  .chip-error{color:var(--wine);font-size:.8rem;margin:6px 0 0;display:none;}
+  .chip-error.show{display:block;}
+  .form-success{
+    display:none;margin-top:16px;padding:14px 16px;border-radius:12px;
+    background:var(--bg-raised);border:1px solid var(--wine);color:var(--ink);font-size:.9rem;
+  }
+  .form-success.show{display:block;}
+
+  /* faq */
+  .faq-item{border-bottom:1px solid var(--line);}
+  .faq-item summary{
+    list-style:none;cursor:pointer;padding:18px 0;display:flex;justify-content:space-between;gap:16px;
+    font-weight:600;font-size:1rem;align-items:center;
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{content:"+";font-size:1.4rem;color:var(--wine);font-weight:400;flex:none;}
+  .faq-item[open] summary::after{content:"–";}
+  .faq-item p{margin:0 0 20px;color:var(--ink-soft);font-size:.92rem;max-width:65ch;}
+
+  footer{border-top:1px solid var(--line);padding-block:44px;}
+  .footer-grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px;}
+  .footer-brand p{color:var(--ink-soft);font-size:.88rem;max-width:34ch;margin:10px 0 0;}
+  .footer-links{display:flex;gap:32px;flex-wrap:wrap;}
+  .footer-col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin:0 0 10px;}
+  .footer-col a{display:block;font-size:.9rem;margin-bottom:6px;text-decoration:none;color:var(--ink);}
+  .footer-col a:hover{color:var(--wine);}
+  .fine{margin-top:32px;font-size:.78rem;color:var(--ink-soft);}
+
+  .sticky-cta{
+    position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:50;
+    display:none;
+  }
+  @media (max-width:720px){
+    .sticky-cta.show{display:block;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-row">
+    <a class="brand" href="#top">
+      <img class="brand-mark" src="assets/logo.png" alt="" width="34" height="34">
+      <span class="brand-word">La Orden<span>Del Descorke</span></span>
+    </a>
+    <nav>
+      <div class="nav-links">
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#planes">Membresías</a>
+        <a href="#gustos">Tus gustos</a>
+        <a href="#preguntas">Preguntas</a>
+      </div>
+      <a class="btn btn-primary btn-small" href="#planes">Quiero sumarme</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Club de vinos por membresía</p>
+        <h1>Una orden secreta para los que <em>aman el vino.</em></h1>
+        <p class="lede">Elegís tu membresía, nos contás tus gustos y todos los meses te dejamos una caja curada en la puerta de tu casa. Sin vueltas, cancelás cuando quieras.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#planes">Ver membresías y sumarme</a>
+          <a class="btn btn-ghost" href="#como-funciona">Cómo funciona</a>
+        </div>
+        <p class="hero-note">Pago seguro con Mercado Pago · El segundo domingo de cada mes, a tu puerta.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-logo-badge">
+          <img src="assets/logo.png" alt="" width="252" height="300">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="como-funciona">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">El proceso</p>
+        <h2>De la puerta de tu casa, al vino en tu copa.</h2>
+        <p>Así de simple es formar parte de La Orden.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Elegís tu membresía</h3>
+          <p>Vas a recibir los vinos de acuerdo al monto de la membresía que elijas, todos los meses.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Te suscribís al toque</h3>
+          <p>Pagás online con Mercado Pago y quedás suscripto en el momento. Cancelás cuando quieras, sin vueltas.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Nos contás tus gustos</h3>
+          <p>Un formulario corto para conocer tus gustos e intereses y personalizar tu primera caja.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Llega la felicidad</h3>
+          <p>El segundo domingo de cada mes te dejamos tu caja: única e irrepetible.</p>
+        </div>
+      </div>
+      <div class="disfrute">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.5-9.3-9A5.4 5.4 0 0 1 12 6a5.4 5.4 0 0 1 9.3 6c-2.3 4.5-9.3 9-9.3 9Z" stroke="currentColor" stroke-width="1.6"/></svg>
+        <p><strong>El disfrute:</strong> te tomás tus vinos con calma y, si querés, nos mandás una devolución. A nosotros nos llena el corazón, y nos sirve para ajustar el ojo en tu próxima caja.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="planes">
+    <div class="wrap">
+      <div class="frame">
+        <div class="plans-top">
+          <div class="section-head" style="margin-bottom:0;">
+            <p class="eyebrow">Elegí tu membresía</p>
+            <h2 style="margin-top:.2em;">Recibís vinos según cuánto quieras invertir en tu ritual.</h2>
+          </div>
+          <div class="toggle" role="group" aria-label="Tamaño de caja">
+            <button type="button" id="toggle-full" aria-pressed="true">Caja completa</button>
+            <button type="button" id="toggle-mini" aria-pressed="false">Mini · 3 botellas</button>
+          </div>
+        </div>
+
+        <div class="plans-grid" id="plans-grid"><!-- filled by JS --></div>
+        <p class="hero-note" style="margin-top:20px;">Los precios son mensuales, en pesos argentinos. Podés cambiar de membresía o cancelar cuando quieras.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="gustos">
+    <div class="wrap">
+      <div class="gustos-wrap">
+        <div class="section-head" style="margin-bottom:0;">
+          <p class="eyebrow">Paso 3 · Formulario</p>
+          <h2>Contanos tus gustos, armamos tu caja a medida.</h2>
+          <p>Esto nos sirve para elegir mejor tus primeras botellas. No hace falta que hayas pagado todavía: podés completarlo en cualquier momento.</p>
+        </div>
+
+        <form id="gustos-form" novalidate>
+          <div class="field">
+            <label for="gustos-membresia">Membresía elegida</label>
+            <select id="gustos-membresia" name="membresia">
+              <option value="Todavía no elegí">Todavía no elegí</option>
+              <option>Siembra</option>
+              <option>Raleo</option>
+              <option>Floración</option>
+              <option>Vendimia</option>
+              <option>Celebración</option>
+              <option>Mini Raleo</option>
+              <option>Mini Floración</option>
+              <option>Mini Vendimia</option>
+              <option>Mini Celebración</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>¿Cómo es tu relación con el vino?</label>
+            <div class="chip-group" data-group="relacion">
+              <label class="chip"><input type="radio" name="relacion" value="Soy un bebedor inquieto, me gusta que me sorprendan" required>Soy un bebedor inquieto, me gusta que me sorprendan</label>
+              <label class="chip"><input type="radio" name="relacion" value="Conozco muy bien mi paladar, aprecio más los vinos cercanos a mi zona de confort" required>Conozco muy bien mi paladar, aprecio más los vinos cercanos a mi zona de confort</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>¿Qué tipos de vino tomás?</label>
+            <div class="chip-group" data-group="tipos">
+              <label class="chip"><input type="checkbox" value="Tintos con cuerpo">Tintos con cuerpo</label>
+              <label class="chip"><input type="checkbox" value="Tintos ligeros y frescos">Tintos ligeros y frescos</label>
+              <label class="chip"><input type="checkbox" value="Blancos ligeros">Blancos ligeros</label>
+              <label class="chip"><input type="checkbox" value="Blancos con volumen">Blancos con volumen</label>
+              <label class="chip"><input type="checkbox" value="Rosados">Rosados</label>
+              <label class="chip"><input type="checkbox" value="Espumosos">Espumosos</label>
+            </div>
+            <p class="chip-error" data-error-for="tipos">Elegí al menos una opción.</p>
+          </div>
+
+          <div class="field">
+            <label for="gustos-no-gusta">¿Hay algo que no te guste?</label>
+            <textarea id="gustos-no-gusta" name="no_gusta" required placeholder="Por ejemplo: no me gustan los vinos muy dulces"></textarea>
+          </div>
+
+          <div class="field">
+            <label>¿Para qué ocasiones solés tomar vino?</label>
+            <div class="chip-group" data-group="ocasiones">
+              <label class="chip"><input type="checkbox" value="Comidas cotidianas">Comidas cotidianas</label>
+              <label class="chip"><input type="checkbox" value="Reuniones con amigos">Reuniones con amigos</label>
+              <label class="chip"><input type="checkbox" value="Ocasiones especiales">Ocasiones especiales</label>
+              <label class="chip"><input type="checkbox" value="Guardar y esperar su evolución">Guardar y esperar su evolución</label>
+              <label class="chip"><input type="checkbox" value="Todas ellas">Todas ellas</label>
+            </div>
+            <p class="chip-error" data-error-for="ocasiones">Elegí al menos una opción.</p>
+          </div>
+
+          <div class="field">
+            <label for="gustos-favoritos">Contanos tus 3 vinos favoritos</label>
+            <textarea id="gustos-favoritos" name="favoritos" required placeholder="Por ejemplo: Malbec de Bodega X, Cabernet de Bodega Y, Chardonnay de Bodega Z"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="gustos-nombre">Nombre</label>
+            <input type="text" id="gustos-nombre" name="nombre" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="gustos-telefono">Teléfono</label>
+            <input type="tel" id="gustos-telefono" name="telefono" required autocomplete="tel">
+          </div>
+          <div class="field">
+            <label for="gustos-email">Email</label>
+            <input type="email" id="gustos-email" name="email" required autocomplete="email">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Enviar por WhatsApp</button>
+          <p class="form-success" id="gustos-success">¡Listo! Se abrió WhatsApp con tus respuestas cargadas — solo tenés que enviar el mensaje y en breve te contestamos.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="preguntas">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Preguntas frecuentes</p>
+        <h2>Todo lo que necesitás saber antes de sumarte.</h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary>¿Puedo cancelar cuando quiera?</summary>
+          <p>Sí. Tu membresía se renueva mes a mes y podés pausarla o cancelarla cuando quieras, sin penalidades ni permanencia mínima.</p>
+        </details>
+        <details class="faq-item">
+          <summary>¿Cómo se hace el pago?</summary>
+          <p>Todo el pago se procesa a través de Mercado Pago, de forma segura. Al elegir tu membresía te llevamos directo al checkout para suscribirte en el momento.</p>
+        </details>
+        <details class="faq-item">
+          <summary>¿Puedo cambiar de membresía más adelante?</summary>
+          <p>Por supuesto. Escribinos por WhatsApp y te ayudamos a subir, bajar o cambiar entre caja completa y mini cuando quieras.</p>
+        </details>
+        <details class="faq-item">
+          <summary>¿Hacen envíos a todo el país?</summary>
+          <p>Hacemos envíos puerta a puerta en nuestra zona de cobertura y coordinamos por correo a otras localidades. Contanos tu ubicación por WhatsApp y te confirmamos.</p>
+        </details>
+        <details class="faq-item">
+          <summary>¿Qué pasa si un vino no me gusta?</summary>
+          <p>Nos importa mucho tu devolución: contanos qué no te cerró y lo tenemos en cuenta para ajustar las próximas cajas a tu gusto real.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="brand-word" style="font-size:1.05rem;">La Orden<span>Del Descorke</span></div>
+      <p>Un club de vinos curados, pensado para que el vino que tomás en tu casa siempre tenga una buena historia atrás.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Explorá</h4>
+        <a href="#planes">Membresías</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#preguntas">Preguntas frecuentes</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <a id="footer-whatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://www.instagram.com/vinotecadenorteasur/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="fine">© <span id="year"></span> La Orden Del Descorke. Membresía sujeta a disponibilidad de stock. Pagos procesados de forma segura con Mercado Pago.</p>
+  </div>
+</footer>
+
+<a class="btn btn-primary btn-small sticky-cta" id="sticky-cta" href="#planes">Quiero sumarme</a>
+
+<script>
+(()=> {
+  "use strict";
+
+  // ------------------------------------------------------------------
+  // CONFIGURACIÓN DEL CLUB — reemplazar estos valores antes de publicar
+  // ------------------------------------------------------------------
+  var CLUB = {
+    // Número de WhatsApp del club, formato internacional sin + ni espacios
+    // (ej: 549 + código de área sin el 0 + número sin el 15)
+    whatsapp: "5491139280759",
+    // Links de checkout de "Mercado Pago Suscripciones" por membresía.
+    // Si un link está vacío, el botón "Suscribirme" abre WhatsApp
+    // con un mensaje pre-armado en su lugar, para no perder la venta.
+    mpLinks: {
+      siembra: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=89961285e5bf4c9a9b23c8d14fc7143e",
+      raleo: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=3b41e87d5a074163ba9ac78b4419cf97",
+      floracion: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=23de34f8849d4e2d954295ea3d745245",
+      vendimia: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=24db8dc0488b4fdf9b8bc0541a00a22f",
+      celebracion: "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=f50d7d4984a9463fa80057d043e5e705",
+      "mini-raleo": "https://mpago.la/2E4T87j",
+      "mini-floracion": "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=7485b0389e834b08810f0ceb722327dc",
+      "mini-vendimia": "https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=9472b41b2b1c4e199cd406a5173d9625",
+      // Todavía no tenemos el link de mini-celebracion: cae al fallback de WhatsApp.
+      "mini-celebracion": "https://mpago.la/1p4E4w7"
+    }
+  };
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+  var waBase = "https://wa.me/" + CLUB.whatsapp;
+  document.getElementById("footer-whatsapp").href = waBase + "?text=" + encodeURIComponent("Hola! Quiero saber más sobre La Orden Del Descorke.");
+
+  // ------------------------------------------------------------------
+  // Icons per etapa (mismo espíritu que Siembra/Raleo/Floración/Vendimia/Celebración)
+  // ------------------------------------------------------------------
+  var ICONS = {
+    siembra: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 21V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 11c0-4-3-6-7-6 0 4 3 6 7 6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 14c0-3.2 2.4-5 6-5 0 3.2-2.4 5-6 5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    raleo: '<svg viewBox="0 0 24 24" fill="none"><circle cx="7" cy="6" r="2.4" stroke="currentColor" stroke-width="1.7"/><circle cx="7" cy="18" r="2.4" stroke="currentColor" stroke-width="1.7"/><path d="M9 7.6 19 17M19 7l-10 10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+    floracion: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.6"/><path d="M12 9c0-2.5-1.6-4.5-3.6-5M12 9c0-2.5 1.6-4.5 3.6-5M12 12c-2.5 0-4.5 1.6-5 3.6M12 12c2.5 0 4.5 1.6 5 3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 15v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    vendimia: '<svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="7" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="8" cy="13" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="13.5" cy="13" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="10.5" cy="18" r="2.2" stroke="currentColor" stroke-width="1.6"/><path d="M11 3.5c0 1-.8 1.8-1.6 2.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    celebracion: '<svg viewBox="0 0 24 24" fill="none"><path d="M4 20 14 6l4 4L4 20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M15 3l1.2 2.2M19.5 6.8 21 8M17.5 10.5l2.3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="7" cy="17" r="1" fill="currentColor"/></svg>'
+  };
+
+  // ------------------------------------------------------------------
+  // Planes — igual estructura que la comunicada hoy por Instagram/WhatsApp
+  // ------------------------------------------------------------------
+  var PLANS = [
+    { key:"siembra", name:"Siembra", icon:"siembra", full:70000, mini:null,
+      desc:"La puerta de entrada a La Orden: tu primera caja para empezar a descubrir." },
+    { key:"raleo", name:"Raleo", icon:"raleo", full:100000, mini:50000,
+      desc:"Un paso más: seleccionamos con más criterio, para paladares curiosos." },
+    { key:"floracion", name:"Floración", icon:"floracion", full:140000, mini:70000,
+      desc:"Etiquetas que empiezan a florecer en complejidad y origen.", featured:true },
+    { key:"vendimia", name:"Vendimia", icon:"vendimia", full:180000, mini:90000,
+      desc:"La cosecha grande: vinos de mayor guarda y bodegas destacadas." },
+    { key:"celebracion", name:"Celebración", icon:"celebracion", full:250000, mini:125000,
+      desc:"Lo mejor de la bodega, para brindar por lo que se viene." }
+  ];
+
+  var grid = document.getElementById("plans-grid");
+  var mode = "full"; // "full" | "mini"
+
+  function money(n){
+    return "$" + n.toLocaleString("es-AR");
+  }
+
+  function render(){
+    grid.innerHTML = "";
+    PLANS.forEach((plan)=> {
+      var card = document.createElement("div");
+      card.className = "plan-card" + (plan.featured ? " featured" : "");
+
+      var badge = plan.featured ? '<span class="plan-badge">La más elegida</span>' : "";
+
+      if(mode === "mini" && plan.mini === null){
+        card.innerHTML =
+          badge +
+          '<div class="plan-icon">'+ICONS[plan.icon]+'</div>' +
+          '<h3 class="plan-name">'+plan.name+'</h3>' +
+          '<p class="plan-desc">'+plan.desc+'</p>' +
+          '<p class="plan-unavailable">Esta membresía no tiene versión Mini. Mirala en "Caja completa".</p>';
+        grid.appendChild(card);
+        return;
+      }
+
+      var price = mode === "mini" ? plan.mini : plan.full;
+      var planLabel = mode === "mini" ? "Mini " + plan.name : plan.name;
+      var planKey = mode === "mini" ? "mini-" + plan.key : plan.key;
+
+      card.innerHTML =
+        badge +
+        '<div class="plan-icon">'+ICONS[plan.icon]+'</div>' +
+        '<h3 class="plan-name">'+plan.name+'</h3>' +
+        '<p class="plan-desc">'+plan.desc+'</p>' +
+        '<p class="plan-price">'+money(price)+' <span>/ mes</span></p>' +
+        '<button type="button" class="btn btn-primary btn-block" data-plan-key="'+planKey+'" data-plan-label="'+planLabel+'" data-plan-price="'+money(price)+'">Suscribirme</button>';
+
+      grid.appendChild(card);
+    });
+
+    grid.querySelectorAll("[data-plan-key]").forEach((btn)=> {
+      btn.addEventListener("click", ()=> {
+        subscribe(btn.getAttribute("data-plan-key"), btn.getAttribute("data-plan-label"), btn.getAttribute("data-plan-price"));
+      });
+    });
+  }
+
+  function subscribe(planKey, planLabel, priceLabel){
+    var link = CLUB.mpLinks[planKey];
+    if(link){
+      window.open(link, "_blank", "noopener");
+    } else {
+      var msg = "Hola! Quiero sumarme a La Orden Del Descorke con la membresía " + planLabel + " (" + priceLabel + "/mes).";
+      window.open(waBase + "?text=" + encodeURIComponent(msg), "_blank", "noopener");
+    }
+    var membresiaSelect = document.getElementById("gustos-membresia");
+    if(membresiaSelect){
+      var opt = Array.prototype.find.call(membresiaSelect.options, (o)=> o.text === planLabel);
+      if(opt){ membresiaSelect.value = opt.value; }
+    }
+    var gustos = document.getElementById("gustos");
+    if(gustos){ gustos.scrollIntoView({behavior:"smooth"}); }
+  }
+
+  document.getElementById("toggle-full").addEventListener("click", function(){
+    mode = "full";
+    this.setAttribute("aria-pressed","true");
+    document.getElementById("toggle-mini").setAttribute("aria-pressed","false");
+    render();
+  });
+  document.getElementById("toggle-mini").addEventListener("click", function(){
+    mode = "mini";
+    this.setAttribute("aria-pressed","true");
+    document.getElementById("toggle-full").setAttribute("aria-pressed","false");
+    render();
+  });
+
+  render();
+
+  // ------------------------------------------------------------------
+  // Formulario nativo de gustos -> arma un mensaje y lo manda por WhatsApp
+  // ------------------------------------------------------------------
+  var form = document.getElementById("gustos-form");
+
+  function checkedValues(group){
+    return Array.prototype.slice.call(form.querySelectorAll('[data-group="'+group+'"] input:checked'))
+      .map((i)=> i.value);
+  }
+  function toggleGroupError(group, show){
+    var el = form.querySelector('[data-error-for="'+group+'"]');
+    if(el){ el.classList.toggle("show", show); }
+  }
+
+  form.addEventListener("submit", (e)=> {
+    e.preventDefault();
+
+    // required text/email/tel/textarea fields + the "relación con el vino" radio
+    // are all native `required` — let the browser show its own validation UI first.
+    if(!form.reportValidity()){ return; }
+
+    var tipos = checkedValues("tipos");
+    var ocasiones = checkedValues("ocasiones");
+    toggleGroupError("tipos", tipos.length === 0);
+    toggleGroupError("ocasiones", ocasiones.length === 0);
+    if(tipos.length === 0 || ocasiones.length === 0){ return; }
+
+    var nombre = document.getElementById("gustos-nombre").value.trim();
+    var telefono = document.getElementById("gustos-telefono").value.trim();
+    var email = document.getElementById("gustos-email").value.trim();
+    var membresia = document.getElementById("gustos-membresia").value;
+    var relacionInput = form.querySelector('[data-group="relacion"] input:checked');
+    var relacion = relacionInput ? relacionInput.value : "Sin especificar";
+    var noGusta = document.getElementById("gustos-no-gusta").value.trim();
+    var favoritos = document.getElementById("gustos-favoritos").value.trim();
+
+    var lines = [
+      "¡Hola! Te paso mis gustos para armar mi caja de La Orden Del Descorke:",
+      "Nombre: " + nombre,
+      "Teléfono: " + telefono,
+      "Email: " + email,
+      "Membresía: " + membresia,
+      "Relación con el vino: " + relacion,
+      "Tipos de vino: " + tipos.join(", "),
+      "No me gusta: " + noGusta,
+      "Ocasiones de consumo: " + ocasiones.join(", "),
+      "Mis 3 vinos favoritos: " + favoritos
+    ];
+
+    window.open(waBase + "?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
+    document.getElementById("gustos-success").classList.add("show");
+  });
+
+  // ------------------------------------------------------------------
+  // CTA flotante en mobile una vez que se pasó el hero
+  // ------------------------------------------------------------------
+  var stickyCta = document.getElementById("sticky-cta");
+  var hero = document.querySelector(".hero");
+  if("IntersectionObserver" in window && stickyCta && hero){
+    var io = new IntersectionObserver((entries)=> {
+      entries.forEach((entry)=> {
+        stickyCta.classList.toggle("show", !entry.isIntersecting);
+      });
+    }, {threshold:0});
+    io.observe(hero);
+  }
+})();
+</script>
+</body>
+</html>
