@@ -64,6 +64,7 @@
   }
   .btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px;}
   .btn:active{transform:translateY(1px);}
+  .btn:disabled{opacity:.65;cursor:wait;}
   .btn-primary{background:var(--wine);color:#fff8f2;}
   .btn-primary:hover{background:var(--wine-deep);}
   .btn-ghost{background:transparent;border-color:var(--line-strong);color:var(--ink);}
@@ -233,6 +234,8 @@
     background:var(--bg-raised);border:1px solid var(--wine);color:var(--ink);font-size:.9rem;
   }
   .form-success.show{display:block;}
+  .form-success.error{color:var(--wine);}
+  .website-field{position:absolute;left:-9999px;}
 
   /* faq */
   .faq-item{border-bottom:1px solid var(--line);}
@@ -450,8 +453,9 @@
             <input type="email" id="gustos-email" name="email" required autocomplete="email">
           </div>
 
-          <button type="submit" class="btn btn-primary btn-block">Enviar por WhatsApp</button>
-          <p class="form-success" id="gustos-success">¡Listo! Se abrió WhatsApp con tus respuestas cargadas — solo tenés que enviar el mensaje y en breve te contestamos.</p>
+          <input class="website-field" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit" class="btn btn-primary btn-block" id="gustos-submit">Enviar respuestas</button>
+          <p class="form-success" id="gustos-success" role="status" aria-live="polite"></p>
         </form>
       </div>
     </div>
@@ -528,6 +532,8 @@
     // Número de WhatsApp del club, formato internacional sin + ni espacios
     // (ej: 549 + código de área sin el 0 + número sin el 15)
     whatsapp: "5491139280759",
+    // URL /exec obtenida al desplegar google-apps-script.gs como aplicación web.
+    formEndpoint: "https://script.google.com/macros/s/AKfycbxqJmq167ms5jdx-CAkFPVbr1o2kiPLOCa_ot9j4Pm103eAvqbQQv5x72ReCZAW0qcY2Q/exec",
     // Links de checkout de "Mercado Pago Suscripciones" por membresía.
     // Si un link está vacío, el botón "Suscribirme" abre WhatsApp
     // con un mensaje pre-armado en su lugar, para no perder la venta.
@@ -657,7 +663,7 @@
   render();
 
   // ------------------------------------------------------------------
-  // Formulario nativo de gustos -> arma un mensaje y lo manda por WhatsApp
+  // Formulario de gustos -> guarda cada respuesta en Google Sheets
   // ------------------------------------------------------------------
   var form = document.getElementById("gustos-form");
 
@@ -670,7 +676,14 @@
     if(el){ el.classList.toggle("show", show); }
   }
 
-  form.addEventListener("submit", (e)=> {
+  function showFormStatus(message, isError){
+    var status = document.getElementById("gustos-success");
+    status.textContent = message;
+    status.classList.toggle("error", isError);
+    status.classList.add("show");
+  }
+
+  form.addEventListener("submit", async (e)=> {
     e.preventDefault();
 
     // required text/email/tel/textarea fields + the "relación con el vino" radio
@@ -692,21 +705,41 @@
     var noGusta = document.getElementById("gustos-no-gusta").value.trim();
     var favoritos = document.getElementById("gustos-favoritos").value.trim();
 
-    var lines = [
-      "¡Hola! Te paso mis gustos para armar mi caja de La Orden Del Descorke:",
-      "Nombre: " + nombre,
-      "Teléfono: " + telefono,
-      "Email: " + email,
-      "Membresía: " + membresia,
-      "Relación con el vino: " + relacion,
-      "Tipos de vino: " + tipos.join(", "),
-      "No me gusta: " + noGusta,
-      "Ocasiones de consumo: " + ocasiones.join(", "),
-      "Mis 3 vinos favoritos: " + favoritos
-    ];
+    if(!CLUB.formEndpoint){
+      showFormStatus("El formulario todavía no está configurado. Escribinos por WhatsApp.", true);
+      return;
+    }
 
-    window.open(waBase + "?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
-    document.getElementById("gustos-success").classList.add("show");
+    var submit = document.getElementById("gustos-submit");
+    var originalLabel = submit.textContent;
+    submit.disabled = true;
+    submit.textContent = "Enviando…";
+
+    try {
+      await fetch(CLUB.formEndpoint, {
+        method: "POST",
+        mode: "no-cors",
+        body: new URLSearchParams({
+          membresia: membresia,
+          relacion: relacion,
+          tipos: tipos.join(", "),
+          no_gusta: noGusta,
+          ocasiones: ocasiones.join(", "),
+          favoritos: favoritos,
+          nombre: nombre,
+          telefono: telefono,
+          email: email,
+          website: form.elements.website.value
+        })
+      });
+      form.reset();
+      showFormStatus("¡Listo! Guardamos tus respuestas. En breve nos ponemos en contacto.", false);
+    } catch (error) {
+      showFormStatus("No pudimos enviar tus respuestas. Probá de nuevo o escribinos por WhatsApp.", true);
+    } finally {
+      submit.disabled = false;
+      submit.textContent = originalLabel;
+    }
   });
 
   // ------------------------------------------------------------------
