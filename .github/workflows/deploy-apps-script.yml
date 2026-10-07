@@ -1,0 +1,65 @@
+name: Deploy Apps Script
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "google-apps-script.gs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-apps-script
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install clasp
+        run: npm install --global @google/clasp@3
+
+      - name: Prepare Apps Script project
+        env:
+          SCRIPT_ID: 1zjrzU55rxM1Zqg2o4Vor1KITcyyZsLVz9J84njPrEB1hsNDLqSoO0rTj
+        run: |
+          mkdir -p "$RUNNER_TEMP/apps-script"
+          cp google-apps-script.gs "$RUNNER_TEMP/apps-script/Code.gs"
+          cat > "$RUNNER_TEMP/apps-script/appsscript.json" <<'JSON'
+          {
+            "timeZone": "America/Argentina/Buenos_Aires",
+            "dependencies": {},
+            "exceptionLogging": "STACKDRIVER",
+            "runtimeVersion": "V8"
+          }
+          JSON
+          printf '{"scriptId":"%s","rootDir":"."}\n' "$SCRIPT_ID" \
+            > "$RUNNER_TEMP/apps-script/.clasp.json"
+
+      - name: Configure Google authentication
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+        run: |
+          if [ -z "$CLASPRC_JSON" ]; then
+            echo "::error::Missing repository secret CLASPRC_JSON"
+            exit 1
+          fi
+          printf '%s' "$CLASPRC_JSON" > "$RUNNER_TEMP/.clasprc.json"
+          chmod 600 "$RUNNER_TEMP/.clasprc.json"
+
+      - name: Push and deploy
+        env:
+          DEPLOYMENT_ID: AKfycbxKRY_8q-YYArTLgdSAiElX9CFjFoZzmEE1NRuo6kGyqSChp_lPsmXriiYtrBFolOAn0g
+        run: |
+          cd "$RUNNER_TEMP/apps-script"
+          clasp -A "$RUNNER_TEMP/.clasprc.json" push --force
+          clasp -A "$RUNNER_TEMP/.clasprc.json" update-deployment "$DEPLOYMENT_ID" \
+            --description "GitHub ${GITHUB_SHA}"
