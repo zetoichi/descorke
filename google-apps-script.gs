@@ -13,6 +13,7 @@ const SHEET_NAME = "Respuestas";
 const NOTIFICATION_EMAILS = [
   "sampedrochristian@yahoo.com.ar",
   "celeste.credidio@gmail.com",
+  "alejandro.zapiola@gmail.com",
 ];
 const HEADERS = [
   "Fecha",
@@ -25,6 +26,7 @@ const HEADERS = [
   "No le gusta",
   "Ocasiones",
   "Vinos favoritos",
+  "Estado del aviso",
 ];
 
 function doPost(e) {
@@ -42,7 +44,11 @@ function doPost(e) {
   const sheet =
     spreadsheet.getSheetByName(SHEET_NAME) ||
     spreadsheet.insertSheet(SHEET_NAME);
-  if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(HEADERS);
+  } else if (!sheet.getRange(1, HEADERS.length).getValue()) {
+    sheet.getRange(1, HEADERS.length).setValue(HEADERS[HEADERS.length - 1]);
+  }
 
   sheet.appendRow([
     new Date(),
@@ -55,12 +61,19 @@ function doPost(e) {
     safeCell(values.no_gusta, 1000),
     safeCell(values.ocasiones, 500),
     safeCell(values.favoritos, 1000),
+    "Pendiente",
   ]);
+  const statusCell = sheet.getRange(sheet.getLastRow(), HEADERS.length);
 
   try {
     sendNotification(values, email);
+    statusCell.setValue("Enviado");
   } catch (error) {
+    const message = error && error.message ? error.message : String(error);
+    statusCell.setValue(`Error: ${message}`.slice(0, 500));
+    SpreadsheetApp.flush();
     console.error("La respuesta se guardó, pero no se pudo enviar el aviso", error);
+    throw error;
   }
 
   return output("ok");
