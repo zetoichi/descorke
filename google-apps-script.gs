@@ -1,13 +1,14 @@
 /*
   1. Creá una hoja de cálculo y copiá su ID de la URL.
-  2. En la hoja: Extensiones > Apps Script. Pegá este archivo y reemplazá SPREADSHEET_ID.
-  3. Implementar > Nueva implementación > Aplicación web.
+  2. En Apps Script: Configuración del proyecto > Propiedades de la secuencia
+     de comandos. Agregá FORM_SHEETS_ID con el ID de la hoja.
+  3. Pegá este archivo e implementalo como Aplicación web.
      Ejecutar como: Yo. Quién tiene acceso: Cualquier persona.
   4. Copiá la URL terminada en /exec en CLUB.formEndpoint dentro de index.html.
   5. Para actualizarlo: Gestionar implementaciones > Editar > Nueva versión > Implementar.
 */
 
-const SPREADSHEET_ID = "17nkyZ9FcBoqYQsEe7tNhK88YiwXIrA50RE2s-UNfsog";
+const FORM_SHEETS_ID = PropertiesService.getScriptProperties().getProperty("FORM_SHEETS_ID");
 const SHEET_NAME = "Respuestas";
 const NOTIFICATION_EMAILS = [
   "sampedrochristian@yahoo.com.ar",
@@ -35,7 +36,9 @@ function doPost(e) {
     return output("invalid");
   }
 
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  if (!FORM_SHEETS_ID) throw new Error("Falta configurar la Script Property FORM_SHEETS_ID");
+
+  const spreadsheet = SpreadsheetApp.openById(FORM_SHEETS_ID);
   const sheet =
     spreadsheet.getSheetByName(SHEET_NAME) ||
     spreadsheet.insertSheet(SHEET_NAME);
